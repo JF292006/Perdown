@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<h:head>
+    <title>Iniciar Sesión</title>
+    <link rel="stylesheet" type="text/css" href="resources/css/estilosinicios.css"/>
+</h:head>
+
+<h:body>
+    <div class="login-container">
+        <div class="login-card">
+            
+     
+            <div class="logo">
+                <img src="resources/images/logo.png" alt="Romar Natural" />
+            </div>
+            
+            <h2>Iniciar Sesión</h2>
+            
+            <h:form>
+                <h:messages globalOnly="true" style="color:red; margin-bottom:10px;" />
+                <div class="input-group">
+                    <label for="correo">Correo *</label>
+                    <h:inputText id="correo" value="#{usuariosBean.usuarios.correo}" required="true"/>
+                </div>
+                
+                <div class="input-group">
+                    <label for="contrasena">Contraseña *</label>
+                    <h:inputSecret id="contrasena" value="#{usuariosBean.usuarios.clave}" required="true"/>
+                </div>
+                
+                <div class="boton">
+                    <h:commandButton value="Iniciar Sesión" action="#{usuariosBean.autenticar}"/>
+                </div>  
+            </h:form>
+        </div>
+    </div>
+</h:body>
+</html>

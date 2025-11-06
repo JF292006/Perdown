@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      lang="es">
+
+    <h:head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"></meta>
+        <title>CRUD - Romar Natural</title>
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+        <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300;1,300&amp;display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
+    </h:head>
+
+    <h:body>
+        <div class="d-flex" style="min-height: 100vh;">
+
+            
+            <div id="sidebar-container" class="bg-primary text-light">
+                <div class="logo p-3">
+                    <h4 class="text-light font-weight-bold mb-0 text-center">Romar Natural</h4>
+                </div>
+                <div class="menu mt-4">
+                    <a href="#" class="d-block text-light p-3 active"><i class="icon ion-md-contacts mr-2 lead"></i>Usuarios</a>
+                    <a href="#" class="d-block text-light p-3"><i class="icon ion-md-cube mr-2 lead"></i>Proveedores</a>    
+                    <a href="#" class="d-block text-light p-3"><i class="icon ion-md-cart mr-2 lead"></i>Ventas</a>
+                    <a href="#" class="d-block text-light p-3"><i class="icon ion-md-folder mr-2 lead"></i>Inventario</a>
+                </div>
+            </div>
+
+           
+            <div class="flex-grow-1 bg-light">
+
+                
+                <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+                    <div class="container-fluid">
+                        <form class="form-inline my-2 my-lg-0 ml-0 d-flex align-items-center">
+                            <input id="globalSearch"
+                                   class="form-control mr-2 search-input"
+                                   type="search"
+                                   placeholder="Buscar"
+                                   aria-label="Buscar"
+                                   onkeyup="filtrarUsuarios()" />
+
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="filtrarUsuarios()">
+                                <i class="icon ion-md-search"></i>
+                            </button>
+                        </form>
+
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Administrador</a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <h:form>
+                                        <p:commandButton value="Volver"
+                                                         styleClass="dropdown-item text-left"
+                                                         action="#{usuariosBean.volverAdmin()}"
+                                                         ajax="false"/>
+                                    </h:form>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Cerrar sesión</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+
+               
+                <div id="content" class="p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h2 class="font-weight-bold text-success m-0">Gestión de Usuarios</h2>
+
+                        <div class="d-flex">
+                            <h:form>
+                                <p:commandButton value="Nuevo Usuario"
+                                                 icon="pi pi-plus"
+                                                 styleClass="pf-btn-primary mr-2"
+                                                 action="#{usuariosBean.irAgregarUsuario()}"
+                                                 ajax="false" />
+
+                                <p:commandButton value="Generar Reporte"
+                                                 icon="pi pi-file"
+                                                 styleClass="pf-btn-secondary"
+                                                 type="button"
+                                                 onclick="console.log('Generar reporte - implementar')" />
+                            </h:form>
+                        </div>
+                    </div>
+
+                   
+                    <h:form id="usuariosForm">
+                        <div class="mb-3 d-flex justify-content-between">
+                            <p:fileUpload id="fileUpload"
+                                          listener="#{usuariosBean.cargaMasivaUsuarios}"
+                                          mode="advanced"
+                                          auto="true"
+                                          allowTypes="/(\.|\/)(xls)$/"
+                                          label="Carga Masiva Excel (.xls)"
+                                          styleClass="pf-btn-upload" />
+
+                            <div class="text-right">
+
+                                <p:commandButton value="Enviar correos"
+                                                 styleClass="pf-btn-secondary"
+                                                 action="correoUsuarios"
+                                                 ajax="false" />
+                            </div>
+                        </div>
+
+                        <p:dataTable id="usuariosTable"
+                                     value="#{usuariosBean.listaUsuarios}"
+                                     var="u"
+                                     paginator="true"
+                                     rows="5"
+                                     widgetVar="usuariosTableWV"
+                                     emptyMessage="No hay usuarios registrados"
+                                     style="width:100%;"
+                                     styleClass="tabla-usuarios table-custom ui-responsive"
+                                     paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}  {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,20">
+
+                            <f:facet name="header">
+                                <div class="d-flex align-items-center justify-content-between w-100">
+                                    <div><strong>Lista de usuarios</strong></div>
+                                    <div class="small text-muted">
+                                        Total: <span id="totalUsuarios">#{usuariosBean.listaUsuarios != null ? usuariosBean.listaUsuarios.size() : 0}</span>
+                                    </div>
+                                </div>
+                            </f:facet>
+
+                            <p:column headerText="ID" filterBy="#{u.id_usuario}" filterMatchMode="contains" style="width:6em">
+                                <h:outputText value="#{u.id_usuario}" />
+                            </p:column>
+
+                            <p:column headerText="Número Identificación" filterBy="#{u.num_identificacion}" filterMatchMode="contains">
+                                <h:outputText value="#{u.num_identificacion}" />
+                            </p:column>
+
+                            <p:column headerText="Tipo Usuario" filterBy="#{u.tipo_usu}" filterMatchMode="contains">
+                                <h:outputText value="#{u.tipo_usu}" />
+                            </p:column>
+
+                            <p:column headerText="Nombre" filterBy="#{u.p_nombre}" filterMatchMode="contains">
+                                <h:outputText value="#{u.p_nombre}" />
+                            </p:column>
+
+                            <p:column headerText="Apellido" filterBy="#{u.p_apellido}" filterMatchMode="contains">
+                                <h:outputText value="#{u.p_apellido}" />
+                            </p:column>
+
+                            <p:column headerText="Correo" filterBy="#{u.correo}" filterMatchMode="contains">
+                                <h:outputText value="#{u.correo}" />
+                            </p:column>
+
+                            <p:column headerText="Teléfono" filterBy="#{u.telefono}" filterMatchMode="contains">
+                                <h:outputText value="#{u.telefono}" />
+                            </p:column>
+
+                            <p:column headerText="Acciones" style="width:12em; text-align:center;">
+                                <p:commandButton value="Editar"
+                                                 icon="pi pi-pencil"
+                                                 action="#{usuariosBean.editarUsuario(u)}"
+                                                 ajax="false"
+                                                 styleClass="pf-btn-edit mr-2" />
+
+                                <p:commandButton value="Eliminar"
+                                                 icon="pi pi-trash"
+                                                 action="#{usuariosBean.eliminarUsuario(u.id_usuario)}"
+                                                 ajax="false"
+                                                 styleClass="pf-btn-delete"
+                                                 onclick="return confirm('¿Seguro que deseas eliminar este usuario?');" />
+                            </p:column>
+
+                        </p:dataTable>
+                    </h:form>
+                </div>
+            </div>
+        </div>
+
+        
+        <h:outputScript target="body">
+            function filtrarUsuarios() {
+                try {
+                    var table = window.PF ? PF('usuariosTableWV') : null;
+                    if (table) {
+                        table.filter();
+                        return;
+                    }
+                } catch (e) {}
+                var q = document.getElementById('globalSearch').value.toLowerCase();
+                var rows = document.querySelectorAll('.tabla-usuarios table tbody tr');
+                rows.forEach(r => {
+                    r.style.display = r.innerText.toLowerCase().includes(q) ? '' : 'none';
+                });
+            }
+        </h:outputScript>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+    </h:body>
+</html>

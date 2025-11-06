@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Listado de Ventas</title>
+    <h:outputStylesheet library="css" name="estilosadmin.css"/>
+</h:head>
+<h:body>
+<header>
+    <div class="logo-container">
+        <h:graphicImage library="images" name="logo.png" styleClass="logo"/>
+        <h1>Panel de Administración</h1>
+    </div>
+    <div class="user-info">
+        <h:form>
+            <p:commandButton value="Volver" styleClass="logout-btn"
+                             action="/admin.xhtml?faces-redirect=true" ajax="false"/>
+        </h:form>
+    </div>
+</header>
+
+<main class="admin-dashboard">
+    <h2 style="text-align:center; margin-bottom:20px;">Gestión de Ventas</h2>
+
+    <h:form id="formVentas">
+        <div style="margin-bottom:15px; text-align:right;">
+            <p:commandButton value="Nueva Venta" styleClass="logout-btn"
+                             action="nuevaVenta.xhtml?faces-redirect=true" ajax="false"/>
+        </div>
+
+        <!-- 📋 Tabla con filtros en las columnas -->
+        <p:dataTable id="tablaVentas" value="#{ventaBean.listaVentas}" var="v"
+                     paginator="true" rows="5" styleClass="tabla-usuarios">
+
+            <p:column headerText="ID" filterBy="#{v.idfactura}" filterMatchMode="contains">
+                <h:outputText value="#{v.idfactura}" />
+            </p:column>
+
+            <p:column headerText="Usuario"
+                      filterBy="#{v.usuario.p_nombre} #{v.usuario.p_apellido}"
+                      filterMatchMode="contains">
+                <h:outputText value="#{v.usuario.p_nombre} #{v.usuario.p_apellido}" />
+            </p:column>
+
+            <p:column headerText="Fecha">
+                <h:outputText value="#{v.fecha_factura}">
+                    <f:convertDateTime pattern="yyyy-MM-dd"/>
+                </h:outputText>
+            </p:column>
+
+            <p:column headerText="Total">
+                <h:outputText value="#{v.valor_total}" />
+            </p:column>
+
+            <p:column headerText="Acciones">
+                <p:commandButton value="Detalle"
+                                 action="#{ventaBean.verDetalle(v)}"
+                                 ajax="false" />
+
+                <p:commandButton value="Eliminar"
+                                 actionListener="#{ventaBean.eliminarVenta(v.idfactura)}"
+                                 ajax="false"
+                                 styleClass="btn-accion"
+                                 onclick="return confirm('¿Eliminar esta venta?')"/>
+            </p:column>
+        </p:dataTable>
+    </h:form>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <div class="contact-info"><h3>Panel Administrativo</h3></div>
+        <div class="system-info"><p>© 2025 Tienda Naturista - Sistema de Administración</p></div>
+    </div>
+</footer>
+</h:body>
+</html>

@@ -1,0 +1,434 @@
+:root{
+    --primary: #3d862e;
+    --ligth: #ffffff;
+    --grey: #efefef;
+}
+
+body{
+    overflow: hidden;
+    font-family: 'Mulish', sans-serif;
+    font-weight: 300;
+    color: var(--primary);
+}
+
+a:hover{
+    text-decoration: none;
+}
+
+.bg-primary{background-color: var(--primary) !important;}
+.bg-mix{background: linear-gradient(180deg, var(--ligth) 50%, var(--grey 0));}
+/*.bg-grey{background-color: var(--grey) !important;}*/
+
+
+#sidebar-container{
+    min-height: 100vh;
+}
+
+#sidebar-container .logo{
+    padding: .875rem 1.25rem;
+}
+
+#sidebar-container .menu{
+    width: 18rem;
+}
+
+#content{
+    overflow-y: auto;
+    height: 100vh;
+    padding: 5rem;
+}
+
+.stat{
+    border-right: 1px solid var(--grey);
+}
+
+.pf-btn-primary.ui-button,
+.pf-btn-primary.ui-button .ui-button-text {
+    background: var(--primary) !important;
+    color: var(--ligth) !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-weight: 600;
+    padding: .45rem .8rem;
+    box-shadow: none !important;
+}
+
+.pf-btn-secondary.ui-button,
+.pf-btn-secondary.ui-button .ui-button-text {
+    background: transparent !important;
+    color: var(--primary) !important;
+    border: 2px solid var(--primary) !important;
+    border-radius: 6px !important;
+    font-weight: 600;
+    padding: .35rem .7rem;
+}
+
+.pf-btn-upload.ui-button,
+.pf-btn-upload.ui-button .ui-button-text {
+    background: var(--primary) !important;
+    color: var(--ligth) !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: .4rem .7rem;
+}
+
+.pf-btn-edit.ui-button,
+.pf-btn-edit.ui-button .ui-button-text {
+    background: #ffc107 !important; 
+    color: #212529 !important;
+    border: none !important;
+    border-radius: 6px;
+    padding: .25rem .5rem;
+    font-size: .85rem;
+}
+
+.pf-btn-delete.ui-button,
+.pf-btn-delete.ui-button .ui-button-text {
+    background: #e74c3c !important; 
+    color: #fff !important;
+    border: none !important;
+    border-radius: 6px;
+    padding: .25rem .5rem;
+    font-size: .85rem;
+}
+
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper table {
+    width: 100%;
+    border-collapse: separate;
+}
+
+.tabla-usuarios.table-custom table thead th,
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper table thead th {
+    background: var(--primary) !important;
+    color: var(--ligth) !important;
+    border: none !important;
+    vertical-align: middle;
+    font-weight: 600;
+}
+
+.tabla-usuarios.table-custom table tbody tr:hover {
+    background: var(--grey) !important;
+    color: var(--primary);
+}
+
+.tabla-usuarios.table-custom table td {
+    vertical-align: middle;
+    padding: .6rem .75rem;
+    border-top: 1px solid rgba(0,0,0,0.04);
+}
+
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper {
+    overflow-x: auto;
+}
+
+.tabla-usuarios .ui-paginator .ui-paginator-page,
+.tabla-usuarios .ui-paginator .ui-paginator-prev,
+.tabla-usuarios .ui-paginator .ui-paginator-next {
+    border: 1px solid rgba(0,0,0,0.05);
+    color: var(--primary);
+}
+
+.tabla-usuarios .ui-paginator .ui-state-active {
+    background: var(--primary) !important;
+    color: var(--ligth) !important;
+    border: none;
+}
+
+.pf-btn-upload .ui-button-text,
+.pf-btn-upload.ui-button {
+    color: var(--ligth) !important;
+}
+
+.pf-btn-edit .pi, .pf-btn-delete .pi, .pf-btn-primary .pi {
+    margin-right: .4rem;
+    vertical-align: middle;
+}
+
+.tabla-usuarios .ui-column-filter, .tabla-usuarios .ui-inputtext {
+    border-radius: .25rem;
+    padding: .35rem .5rem;
+    border: 1px solid rgba(0,0,0,0.08);
+}
+
+
+.ui-button, .ui-inputtext, .ui-paginator {
+    box-shadow: none !important;
+}
+
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper table {
+    width: 100%;
+    border-collapse: separate;
+    background: var(--ligth);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* Encabezado */
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper table thead th {
+    background: var(--primary) !important;
+    color: var(--ligth) !important;
+    padding: .75rem .9rem;
+    font-weight: 600;
+    border: none;
+    vertical-align: middle;
+}
+
+/* Filas */
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper table tbody tr {
+    transition: background .12s ease;
+}
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper table tbody tr:hover {
+    background: var(--grey) !important;
+    color: var(--primary);
+}
+
+/* Celdas */
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper table tbody td {
+    padding: .6rem .75rem;
+    border-top: 1px solid rgba(0,0,0,0.04);
+    vertical-align: middle;
+}
+
+/* Paginador */
+.tabla-usuarios .ui-paginator {
+    margin-top: 0.75rem;
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+}
+.tabla-usuarios .ui-paginator .ui-paginator-page,
+.tabla-usuarios .ui-paginator .ui-paginator-prev,
+.tabla-usuarios .ui-paginator .ui-paginator-next {
+    border-radius: 4px;
+    padding: .35rem .5rem;
+    margin-left: .35rem;
+    color: var(--primary);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+.tabla-usuarios .ui-paginator .ui-state-active {
+    background: var(--primary) !important;
+    color: var(--ligth) !important;
+    border: none;
+}
+
+/* Botones dentro de la tabla: tamaño reducido y alineación */
+.pf-btn-edit.ui-button, .pf-btn-delete.ui-button {
+    padding: .35rem .6rem;
+    font-size: .85rem;
+}
+
+/* Asegurar icon + texto se ven bien */
+.pf-btn-edit .pi, .pf-btn-delete .pi { margin-right: .35rem; }
+
+/* Fuerza que los inputs de filtro tengan el look esperado */
+.tabla-usuarios .ui-column-filter, .tabla-usuarios .ui-inputtext {
+    border-radius: .25rem;
+    padding: .35rem .5rem;
+    border: 1px solid rgba(0,0,0,0.08);
+}
+
+/* Si quieres que la tabla tenga sombra sutil (igual que tus cards) */
+.tabla-usuarios.table-custom { box-shadow: 0 .125rem .25rem rgba(0,0,0,.03); border-radius:6px; padding:0.2rem; background:transparent; }
+
+
+/* ===== Ajustes PrimeFaces -> estética Romar Natural ===== */
+
+/* contenedor general de la dataTable */
+.tabla-usuarios.table-custom {
+    background: transparent;
+    border-radius: 6px;
+}
+
+/* tabla real dentro del wrapper PF */
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--ligth);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* encabezado */
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper table thead th {
+    background: var(--primary) !important;
+    color: var(--ligth) !important;
+    padding: .70rem .9rem;
+    font-weight: 700;
+    border: none;
+    text-align: left;
+}
+
+/* cuerpo de la tabla */
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper table tbody tr {
+    background: transparent;
+    transition: background .12s ease;
+}
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper table tbody tr:hover {
+    background: var(--grey) !important;
+    color: var(--primary);
+}
+
+/* celdas */
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper table tbody td {
+    padding: .6rem .75rem;
+    border-top: 1px solid rgba(0,0,0,0.04);
+    vertical-align: middle;
+}
+
+/* centrado de acciones */
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper table tbody td:last-child {
+    text-align: center;
+}
+
+/* paginador alineado a la derecha y look limpio */
+.tabla-usuarios .ui-paginator {
+    margin-top: .75rem;
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:.35rem;
+    background:transparent;
+    border:none;
+}
+.tabla-usuarios .ui-paginator .ui-paginator-page,
+.tabla-usuarios .ui-paginator .ui-paginator-prev,
+.tabla-usuarios .ui-paginator .ui-paginator-next {
+    border-radius: 4px;
+    padding: .35rem .5rem;
+    color: var(--primary);
+    border: 1px solid rgba(0,0,0,0.05);
+    background: var(--ligth);
+}
+.tabla-usuarios .ui-paginator .ui-state-active {
+    background: var(--primary) !important;
+    color: var(--ligth) !important;
+    border: none;
+}
+
+/* botones PrimeFaces - adaptados a tu paleta */
+.pf-btn-primary.ui-button, .pf-btn-primary.ui-button .ui-button-text {
+    background: var(--primary) !important;
+    color: var(--ligth) !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: .45rem .8rem;
+    font-weight: 600;
+    box-shadow: none !important;
+}
+
+.pf-btn-secondary.ui-button, .pf-btn-secondary.ui-button .ui-button-text {
+    background: transparent !important;
+    color: var(--primary) !important;
+    border: 2px solid var(--primary) !important;
+    border-radius: 6px !important;
+    padding: .35rem .7rem;
+    font-weight: 600;
+}
+
+.pf-btn-upload.ui-button {
+    background: var(--primary) !important;
+    color: var(--ligth) !important;
+    border-radius: 6px !important;
+    padding: .4rem .7rem;
+    border:none !important;
+}
+
+/* botones pequeños en acciones */
+.pf-btn-edit.ui-button, .pf-btn-delete.ui-button {
+    padding: .30rem .6rem;
+    font-size: .85rem;
+    border-radius: 6px;
+}
+.pf-btn-edit.ui-button { background: #ffc107 !important; color: #212529 !important; border:none !important; }
+.pf-btn-delete.ui-button { background: #e74c3c !important; color: #fff !important; border:none !important; }
+
+/* inputs de filtro (si aparecen) */
+.tabla-usuarios .ui-column-filter, .tabla-usuarios .ui-inputtext {
+    border-radius: .25rem;
+    padding: .35rem .5rem;
+    border: 1px solid rgba(0,0,0,0.08);
+}
+
+/* evitar sombras molestas */
+.ui-button, .ui-inputtext, .ui-paginator { box-shadow: none !important; }
+
+/* mejora para responsive: que la tabla no rompa layout */
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* Si algún estilo del theme PF sobrescribe, forzamos puntualmente */
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper table thead th,
+.tabla-usuarios.table-custom .ui-datatable-tablewrapper table tbody td {
+    -webkit-font-smoothing:antialiased;
+}
+
+/* ==== ESTILOS DE TABLA ==== */
+.table-custom .ui-datatable-header {
+    background-color: #198754 !important; /* verde principal */
+    color: #fff !important;
+    font-weight: 600;
+    text-align: left;
+    border-radius: 10px 10px 0 0;
+    padding: 10px 15px;
+}
+
+.table-custom .ui-column-title {
+    color: #fff !important;
+    font-weight: 500;
+}
+
+.table-custom thead th {
+    background-color: #198754 !important;
+    color: #fff !important;
+    text-align: center;
+    border: none !important;
+}
+
+.table-custom tbody td {
+    background-color: #fff !important;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+}
+
+.table-custom input[type="text"],
+.table-custom input.ui-column-filter {
+    background-color: #f9f9f9 !important;
+    border: 1px solid #ccc !important;
+    border-radius: 5px !important;
+    color: #333 !important;
+    padding: 4px 8px !important;
+}
+
+.table-custom input:focus {
+    outline: none !important;
+    border-color: #198754 !important;
+    box-shadow: 0 0 4px #19875480;
+}
+
+/* ==== Paginador ==== */
+.ui-paginator {
+    background-color: #f8f9fa !important;
+    border: none !important;
+    padding: 5px 0 !important;
+}
+
+/* ==== Botones PrimeFaces ==== */
+.pf-btn-primary {
+    background-color: #198754 !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 6px 15px !important;
+    transition: 0.2s;
+}
+.pf-btn-primary:hover {
+    background-color: #146c43 !important;
+}
+
+.pf-btn-secondary {
+    background-color: #6c757d !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 6px 15px !important;
+}
