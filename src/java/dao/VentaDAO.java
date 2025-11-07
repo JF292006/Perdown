@@ -8,7 +8,11 @@ import modelo.Usuarios;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class VentaDAO {
 
@@ -98,6 +102,36 @@ public class VentaDAO {
         }
         return lista;
     }
+// listar2
+    public List<Venta> listarPorUsuario(int idUsuario) {
+    List<Venta> lista = new ArrayList<>();
+    try (Connection con = ConDB.conectar()) {
+        String sql = "SELECT v.*, u.p_nombre, u.p_apellido FROM venta v " +
+                     "JOIN usuarios u ON v.usuarios_id_usuario = u.id_usuario " +
+                     "WHERE v.usuarios_id_usuario = ?";
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setInt(1, idUsuario);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            Venta v = new Venta();
+            v.setIdfactura(rs.getInt("idfactura"));
+            v.setFecha_factura(rs.getDate("fecha_factura"));
+            v.setValor_total(rs.getDouble("valor_total"));
+
+            Usuarios u = new Usuarios();
+            u.setP_nombre(rs.getString("p_nombre"));
+            u.setP_apellido(rs.getString("p_apellido"));
+            v.setUsuario(u);
+
+            lista.add(v);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return lista;
+}
 
     // LISTAR DETALLE
     public List<Venta_has_producto> listarDetalle(int idVenta) {
@@ -133,6 +167,131 @@ public class VentaDAO {
     }
     return lista;
 }
+    //Actualizar venta
+  public void actualizar(Venta venta, List<Venta_has_producto> carrito) throws SQLException {
+    Connection con = null;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+
+    try {
+        con = ConDB.conectar();
+        con.setAutoCommit(false);
+
+        int idVenta = venta.getIdfactura();
+
+        // 1) Obtener detalle antiguo (map: productoId -> cantidad)
+        Map<Integer, Integer> viejo = new HashMap<>();
+        String sqlOld = "SELECT productos_idproducto, cantidad FROM venta_has_producto WHERE venta_idfactura = ?";
+        try (PreparedStatement psOld = con.prepareStatement(sqlOld)) {
+            psOld.setInt(1, idVenta);
+            try (ResultSet rsOld = psOld.executeQuery()) {
+                while (rsOld.next()) {
+                    viejo.put(rsOld.getInt("productos_idproducto"), rsOld.getInt("cantidad"));
+                }
+            }
+        }
+
+        // 2) Construir mapa nuevo (productoId -> cantidad)
+        Map<Integer, Integer> nuevo = new HashMap<>();
+        for (Venta_has_producto it : carrito) {
+            nuevo.put(it.getProducto().getIdproducto(), it.getCantidad());
+        }
+
+        // 3) Calcular diferencias y validar stock (y aplicar actualizaciones de stock)
+        // Para cada producto en la unión de keys:
+        Set<Integer> allIds = new HashSet<>();
+        allIds.addAll(viejo.keySet());
+        allIds.addAll(nuevo.keySet());
+
+        for (Integer prodId : allIds) {
+            int qtyOld = viejo.getOrDefault(prodId, 0);
+            int qtyNew = nuevo.getOrDefault(prodId, 0);
+            int diff = qtyNew - qtyOld; // >0 -> restar stock; <0 -> sumar stock
+
+            if (diff > 0) {
+                // validar stock actual
+                String sqlStockSel = "SELECT stock FROM producto WHERE idproducto = ?";
+                int stockActual = 0;
+                try (PreparedStatement psStockSel = con.prepareStatement(sqlStockSel)) {
+                    psStockSel.setInt(1, prodId);
+                    try (ResultSet rsStock = psStockSel.executeQuery()) {
+                        if (rsStock.next()) {
+                            stockActual = rsStock.getInt("stock");
+                        } else {
+                            throw new SQLException("Producto no encontrado: " + prodId);
+                        }
+                    }
+                }
+                if (stockActual < diff) {
+                    throw new SQLException("Stock insuficiente para el producto id " + prodId + ". Disponible: " + stockActual + ", requerido: " + diff);
+                }
+                String sqlUpdStock = "UPDATE producto SET stock = stock - ? WHERE idproducto = ?";
+                try (PreparedStatement psUpd = con.prepareStatement(sqlUpdStock)) {
+                    psUpd.setInt(1, diff);
+                    psUpd.setInt(2, prodId);
+                    psUpd.executeUpdate();
+                }
+            } else if (diff < 0) {
+                // aumentar stock (se devolvió cantidad)
+                String sqlUpdStock = "UPDATE producto SET stock = stock + ? WHERE idproducto = ?";
+                try (PreparedStatement psUpd = con.prepareStatement(sqlUpdStock)) {
+                    psUpd.setInt(1, -diff);
+                    psUpd.setInt(2, prodId);
+                    psUpd.executeUpdate();
+                }
+            }
+        }
+
+        // 4) Actualizar cabecera de venta (fecha, subtotal, descuento, abono, valor_total, observaciones)
+        String sqlUpdVenta = "UPDATE venta SET fecha_factura = ?, subtotal = ?, descuento = ?, abono = ?, valor_total = ?, observaciones = ? WHERE idfactura = ?";
+        try (PreparedStatement psUpdVenta = con.prepareStatement(sqlUpdVenta)) {
+            psUpdVenta.setDate(1, new java.sql.Date(venta.getFecha_factura().getTime()));
+            psUpdVenta.setDouble(2, venta.getSubtotal());
+            psUpdVenta.setInt(3, venta.getDescuento());
+            psUpdVenta.setDouble(4, venta.getAbono());
+            psUpdVenta.setDouble(5, venta.getValor_total());
+            psUpdVenta.setString(6, venta.getObservaciones());
+            psUpdVenta.setInt(7, idVenta);
+            psUpdVenta.executeUpdate();
+        }
+
+        // 5) Reemplazar los detalles: eliminar y volver a insertar (ya ajustamos el stock)
+        String sqlDelete = "DELETE FROM venta_has_producto WHERE venta_idfactura = ?";
+        try (PreparedStatement psDel = con.prepareStatement(sqlDelete)) {
+            psDel.setInt(1, idVenta);
+            psDel.executeUpdate();
+        }
+
+        String sqlInsertDet = "INSERT INTO venta_has_producto (venta_idfactura, productos_idproducto, cantidad, valor_unitario) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement psIns = con.prepareStatement(sqlInsertDet)) {
+            for (Venta_has_producto it : carrito) {
+                psIns.setInt(1, idVenta);
+                psIns.setInt(2, it.getProducto().getIdproducto());
+                psIns.setInt(3, it.getCantidad());
+                psIns.setDouble(4, it.getValor_unitario());
+                psIns.addBatch();
+            }
+            psIns.executeBatch();
+        }
+
+        con.commit();
+    } catch (SQLException e) {
+        if (con != null) {
+            try {
+                con.rollback();
+            } catch (SQLException ex) {
+                // log rollback failure
+            }
+        }
+        throw e;
+    } finally {
+        if (rs != null) try { rs.close(); } catch (SQLException ignored) {}
+        if (ps != null) try { ps.close(); } catch (SQLException ignored) {}
+        if (con != null) try { con.setAutoCommit(true); con.close(); } catch (SQLException ignored) {}
+    }
+}
+
+
 
     // ELIMINAR VENTA
     public void eliminar(int idVenta) throws SQLException {

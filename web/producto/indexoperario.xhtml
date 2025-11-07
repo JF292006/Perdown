@@ -74,7 +74,7 @@
                 gap: 6px;
                 align-items: center;
                 justify-content: flex-start;
-                white-space: nowrap;   
+                white-space: nowrap;
             }
 
 
@@ -82,11 +82,11 @@
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                gap: 4px;          
-                padding: 4px 6px;  
-                font-size: 12px;  
+                gap: 4px;
+                padding: 4px 6px;
+                font-size: 12px;
                 line-height: 1.2;
-                min-width: auto;  
+                min-width: auto;
                 height: auto;
                 border-radius: 6px;
             }
@@ -120,7 +120,7 @@
             .del {
                 background:#ffcdd2;
             }
-         
+
             .form-container {
                 background-color: #ffffff;
                 padding: 24px;
@@ -248,20 +248,24 @@
                     <p:column headerText="Proveedor" filterBy="#{producto.prov.nombre_proveedor}">
                         <h:outputText value="#{producto.prov.nombre_proveedor}"/>
                     </p:column>
-                            <p:column headerText="Acciones" style="width:250px; text-align:center">
-                                <div class="actions">
-                                    <p:commandButton icon="pi pi-pencil" value="Editar"
-                                                     actionListener="#{productoBean.editar(producto)}"
-                                                     update=":formEditar" oncomplete="PF('dlgEditar').show()"
-                                                     styleClass="icon-btn edit" />
+                    <p:column headerText="Stock" filterBy="#{producto.stock}">
+                        <h:outputText value="#{producto.stock}" />
+                    </p:column>
 
-                                    <p:commandButton icon="pi pi-trash" value="Eliminar"
-                                                     actionListener="#{productoBean.eliminar(producto)}"
-                                                     update="@form"
-                                                     onclick="return confirm('¿Eliminar este producto?')"
-                                                     styleClass="icon-btn del" />
-                                </div>
-                            </p:column>
+                    <p:column headerText="Acciones" style="width:250px; text-align:center">
+                        <div class="actions">
+                            <p:commandButton icon="pi pi-pencil" value="Editar"
+                                             actionListener="#{productoBean.editar(producto)}"
+                                             update=":formEditar" oncomplete="PF('dlgEditar').show()"
+                                             styleClass="icon-btn edit" />
+
+                            <p:commandButton icon="pi pi-trash" value="Eliminar"
+                                             actionListener="#{productoBean.eliminar(producto)}"
+                                             update="@form"
+                                             onclick="return confirm('¿Eliminar este producto?')"
+                                             styleClass="icon-btn del" />
+                        </div>
+                    </p:column>
                 </p:dataTable>
             </h:form>
             <!-- duro -->
@@ -288,6 +292,11 @@
 
                             <h:outputLabel for="proveedor" value="Proveedor:"/>
                             <p:inputText id="proveedor" value="#{productoBean.producto.proveedor_idproveedor}" required="true" styleClass="input-field"/>
+                            <h:outputLabel for="stock" value="Stock:"/>
+                            <p:inputText id="stock" value="#{productoBean.producto.stock}" required="true" styleClass="input-field">
+                                <f:convertNumber integerOnly="true"/>
+                            </p:inputText>
+
                         </h:panelGrid>
 
                         <div class="btn-container" style="margin-top:18px;">

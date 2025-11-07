@@ -129,16 +129,29 @@
                     <p:inputText id="tipo" value="#{productoBean.producto.nombre_tipo}" required="true" />
 
                     <h:outputLabel for="registro" value="Registro Sanitario:" />
-                    <p:inputText id="registro" value="#{productoBean.producto.registrosanitario}" required="true" />
+                    <p:selectOneMenu id="registro" value="#{productoBean.producto.registrosanitario}" required="true">
+                        <f:selectItem itemLabel="Seleccione..." itemValue="" noSelectionOption="true" />
+                        <f:selectItem itemLabel="Sí" itemValue="Sí" />
+                        <f:selectItem itemLabel="No" itemValue="No" />
+                    </p:selectOneMenu>
 
-                    <h:outputLabel for="proveedor" value="ID del Proveedor:" />
-                    <p:inputText id="proveedor" value="#{productoBean.producto.proveedor_idproveedor}" required="true" label="Proveedor">
+                    <h:outputLabel for="stock" value="Stock:" />
+                    <p:inputText id="stock" value="#{productoBean.producto.stock}" required="true" label="Stock">
                         <f:convertNumber integerOnly="true"/>
+                    </p:inputText>
+
+                    <h:outputLabel for="proveedor" value="Proveedor:" />
+                    <p:selectOneMenu id="proveedor" value="#{productoBean.producto.proveedor_idproveedor}" required="true">
+                        <f:selectItem itemLabel="Seleccione proveedor..." itemValue="" noSelectionOption="true"/>
+                        <f:selectItems value="#{productoBean.listaProveedores}" var="prov"
+                                       itemLabel="#{prov.nombre_proveedor}" itemValue="#{prov.idproveedor}" />
+                    </p:selectOneMenu>
+
                     </p:inputText>
                 </h:panelGrid>
 
                 <div class="btn-container">
-               
+
                     <p:commandButton value="Agregar"
                                      actionListener="#{productoBean.agregar}"
                                      action="index"
@@ -146,7 +159,7 @@
                                      process="@form"
                                      styleClass="add-btn"
                                      ajax="false" /> 
-                        <p:button value="Cancelar" outcome="index" styleClass="back-btn"/>
+                    <p:button value="Cancelar" outcome="index" styleClass="back-btn"/>
                 </div>
             </div>
         </h:form>

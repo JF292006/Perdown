@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <meta charset="UTF-8"/>
+    <title>Editar Venta</title>
+    <h:outputStylesheet library="css" name="estilosadmin.css"/>
+</h:head>
+
+<h:body>
+    <header>
+        <div class="logo-container">
+            <h:graphicImage library="images" name="logo.png" styleClass="logo"/>
+            <h1>Editar Venta</h1>
+        </div>
+        <div class="user-info">
+            <h:form>
+                <p:commandButton value="Volver" styleClass="logout-btn"
+                                 action="/ventas/listarVentas.xhtml?faces-redirect=true" ajax="false"/>
+            </h:form>
+        </div>
+    </header>
+
+    <main class="admin-dashboard">
+        <h2 style="text-align:center; margin-bottom:20px;">Editar Venta ##{ventaBean.ventaActual.idfactura}</h2>
+
+        <h:form id="formEditarVenta">
+            <p:messages id="messages" showDetail="true" />
+
+            <!-- Observaciones y cabecera (fecha no editable por UI según tu requerimiento) -->
+            <h:panelGrid columns="2" style="width:70%; margin:auto;">
+                <h:outputLabel value="Fecha (se actualizará automáticamente):" />
+                <h:outputText value="#{ventaBean.ventaActual.fecha_factura}">
+                    <f:convertDateTime pattern="yyyy-MM-dd HH:mm" />
+                </h:outputText>
+
+                <h:outputLabel for="obs" value="Observaciones:"/>
+                <p:inputTextarea id="obs" value="#{ventaBean.ventaActual.observaciones}" rows="3" cols="50"/>
+            </h:panelGrid>
+
+            <h3 style="margin-top:20px;">Productos (agrega o modifica cantidades)</h3>
+
+            <!-- Lista de productos para agregar (igual que nuevaVenta) -->
+            <p:dataTable id="tablaProductos" value="#{productoBean.lstProds}" var="p"
+                         paginator="true" rows="5" style="width:90%; margin:auto;">
+                <p:column headerText="Nombre"><h:outputText value="#{p.nombre_producto}"/></p:column>
+                <p:column headerText="Precio">
+                    <h:outputText value="#{p.precio_producto}">
+                        <f:convertNumber type="currency" currencySymbol="$"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Stock"><h:outputText value="#{p.stock}" /></p:column>
+                <p:column headerText="Cantidad">
+                    <p:inputText value="#{ventaBean.cantidadesPorProducto[p.idproducto]}" size="3" maxlength="3">
+                        <f:convertNumber integerOnly="true"/>
+                    </p:inputText>
+                </p:column>
+                <p:column headerText="Acciones">
+                    <p:commandButton value="Agregar" icon="pi pi-cart-plus"
+                                     actionListener="#{ventaBean.agregarProducto(p)}"
+                                     update=":formEditarVenta:carrito :formEditarVenta:totales :formEditarVenta:messages"
+                                     styleClass="ui-button-success"/>
+                </p:column>
+            </p:dataTable>
+
+            <!-- Carrito editable -->
+            <h3 style="margin-top:20px;">Carrito</h3>
+            <p:dataTable id="carrito" value="#{ventaBean.carrito}" var="c"
+                         emptyMessage="No hay productos en el carrito" style="width:90%; margin:auto;">
+
+                <p:column headerText="Producto"><h:outputText value="#{c.producto.nombre_producto}"/></p:column>
+
+                <p:column headerText="Cantidad">
+                    <p:inputText value="#{ventaBean.cantidadesPorProducto[c.producto.idproducto]}" size="4">
+                        <f:convertNumber integerOnly="true"/>
+                    </p:inputText>
+                    <p:commandButton value="Actualizar" icon="pi pi-refresh" process="@this"
+                                     actionListener="#{ventaBean.actualizarCantidad(c)}"
+                                     update=":formEditarVenta:carrito :formEditarVenta:totales :formEditarVenta:messages"
+                                     styleClass="ui-button-secondary"/>
+                </p:column>
+
+                <p:column headerText="Valor Unitario">
+                    <h:outputText value="#{c.valor_unitario}">
+                        <f:convertNumber type="currency" currencySymbol="$"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Subtotal">
+                    <h:outputText value="#{c.cantidad * c.valor_unitario}">
+                        <f:convertNumber type="currency" currencySymbol="$"/>
+                    </h:outputText>
+                </p:column>
+
+                <p:column headerText="Eliminar">
+                    <p:commandButton value="Eliminar" icon="pi pi-trash"
+                                     actionListener="#{ventaBean.eliminarDelCarrito(c)}"
+                                     update=":formEditarVenta:carrito :formEditarVenta:totales :formEditarVenta:messages"
+                                     styleClass="ui-button-danger"/>
+                </p:column>
+            </p:dataTable>
+
+            <!-- Descuento / Abono y Totales -->
+            <h:panelGrid columns="2" style="width:70%; margin:auto; margin-top:20px;">
+                <h:outputLabel value="Descuento (%):"/>
+                <p:inputText value="#{ventaBean.ventaActual.descuento}">
+                    <f:convertNumber integerOnly="true"/>
+                    <p:ajax event="keyup" update="totales"/>
+                </p:inputText>
+
+                <h:outputLabel value="Abono:"/>
+                <p:inputText value="#{ventaBean.ventaActual.abono}">
+                    <f:convertNumber maxFractionDigits="2"/>
+                    <p:ajax event="keyup" update="totales"/>
+                </p:inputText>
+            </h:panelGrid>
+
+            <p:panel id="totales" style="width:300px;margin:20px auto;">
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="Subtotal:"/>
+                    <h:outputText value="#{ventaBean.subtotal}">
+                        <f:convertNumber type="currency" currencySymbol="$"/>
+                    </h:outputText>
+
+                    <h:outputLabel value="Descuento aplicado:"/>
+                    <h:outputText value="#{ventaBean.subtotal * (ventaBean.ventaActual.descuento / 100)}">
+                        <f:convertNumber type="currency" currencySymbol="$"/>
+                    </h:outputText>
+
+                    <h:outputLabel value="Total:"/>
+                    <h:outputText value="#{ventaBean.total}">
+                        <f:convertNumber type="currency" currencySymbol="$"/>
+                    </h:outputText>
+
+                    <h:outputLabel value="Abono:"/>
+                    <h:outputText value="#{ventaBean.ventaActual.abono}">
+                        <f:convertNumber type="currency" currencySymbol="$"/>
+                    </h:outputText>
+                </h:panelGrid>
+            </p:panel>
+
+            <div style="text-align:right; margin-top:10px;">
+                <p:commandButton value="Actualizar Venta"
+                                 actionListener="#{ventaBean.actualizarVenta}"
+                                 update="messages carrito totales tablaProductos"
+                                 styleClass="ui-button-success"/>
+            </div>
+        </h:form>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="contact-info"><h3>Panel Administrativo</h3></div>
+            <div class="system-info"><p>© 2025 Tienda Naturista - Sistema de Administración</p></div>
+        </div>
+    </footer>
+</h:body>
+</html>

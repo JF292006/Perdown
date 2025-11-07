@@ -17,6 +17,8 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import dao.ProveedorDAO;
+import modelo.Proveedor;
 
 @ManagedBean
 @ApplicationScoped
@@ -25,6 +27,15 @@ public class ProductoBean {
     private final ProductoDAO prodDAO = new ProductoDAO();
     private Producto producto = new Producto();
     private List<Producto> lstProds = new ArrayList<>();
+    private List<Proveedor> listaProveedores = new ArrayList<>();
+
+    public List<Proveedor> getListaProveedores() {
+        if (listaProveedores.isEmpty()) {
+            ProveedorDAO provDAO = new ProveedorDAO();
+            listaProveedores = provDAO.listar();
+        }
+        return listaProveedores;
+    }
 
     public void exportarPDF() {
         try {
@@ -48,7 +59,7 @@ public class ProductoBean {
 
         } catch (JRException | IOException e) {
             FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error creando reporte"));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Error creando reporte"));
         }
     }
 
