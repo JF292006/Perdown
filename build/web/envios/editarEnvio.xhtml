@@ -1,98 +1,201 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      lang="es">
+
 <h:head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Editar Envío</title>
-    <h:outputStylesheet library="css" name="estilosadmin.css"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Editar Envío - Romar Natural</title>
+
+    <!-- Bootstrap, Iconos y fuentes -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300;1,300&amp;display=swap" rel="stylesheet" />
+
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
 </h:head>
 
 <h:body>
-    <header>
-        <div class="logo-container">
-            <h:graphicImage library="images" name="logo.png" styleClass="logo"/>
-            <h1>Panel de Administración</h1>
-        </div>
-    </header>
 
-    <main class="admin-dashboard">
-        <h2 style="text-align:center; margin-bottom:20px;">Editar Envío</h2>
-
-        <h:form id="formEditarEnvio">
-
-            <!-- Mensajes de validación -->
-            <p:messages id="msgs" closable="true" />
-
-            <!-- ID oculto -->
-            <h:inputHidden value="#{enviosBean.envio.idenvio}" />
-
-            <div class="form-group">
-                <h:outputLabel value="Estado:" for="estado"/>
-                <p:inputText id="estado" value="#{enviosBean.envio.estado_envio}" required="true" />
+    <div class="d-flex" style="min-height: 100vh;">
+        <!-- SIDEBAR -->
+        <div id="sidebar-container" class="bg-primary text-light">
+            <div class="logo p-3">
+                <h4 class="text-light font-weight-bold text-center mb-0">Romar Natural</h4>
             </div>
-
-            <div class="form-group">
-                <h:outputLabel value="Fecha de Envío:" for="fechaEnvio"/>
-                <p:calendar id="fechaEnvio" value="#{enviosBean.envio.fecha_envio}" pattern="yyyy-MM-dd" required="true"/>
-            </div>
-
-            <div class="form-group">
-                <h:outputLabel value="Fecha de Entrega:" for="fechaEntrega"/>
-                <p:calendar id="fechaEntrega" value="#{enviosBean.envio.fecha_entrega}" pattern="yyyy-MM-dd"/>
-            </div>
-
-            <div class="form-group">
-                <h:outputLabel value="Dirección de Salida:" for="dirSalida"/>
-                <p:inputText id="dirSalida" value="#{enviosBean.envio.direccion_salida}" required="true"/>
-            </div>
-
-            <div class="form-group">
-                <h:outputLabel value="Dirección de Entrega:" for="dirEntrega"/>
-                <p:inputText id="dirEntrega" value="#{enviosBean.envio.direccion_envio}" required="true"/>
-            </div>
-
-            <div class="form-group">
-                <h:outputLabel value="Observaciones:" for="obs"/>
-                <p:inputTextarea id="obs" value="#{enviosBean.envio.observaciones}" rows="3" cols="30"/>
-            </div>
-
-            <div class="form-group">
-                <h:outputLabel value="Novedades:" for="novedad"/>
-                <p:inputTextarea id="novedad" value="#{enviosBean.envio.novedades}" rows="3" cols="30"/>
-            </div>
-
-            <div class="form-group">
-                <h:outputLabel value="Mensajería:" for="mensajeria"/>
-                <p:selectOneMenu id="mensajeria" value="#{enviosBean.envio.fk_mensajeria}" required="true">
-                    <f:selectItem itemLabel="Seleccione una mensajería" noSelectionOption="true"/>
-                    <f:selectItems value="#{enviosBean.listaMensajerias}" var="m"
-                                   itemLabel="#{m.nombre_mensajeria}" itemValue="#{m.idmensajeria}"/>
-                </p:selectOneMenu>
-            </div>
-
-            <div class="form-group" style="text-align:right; margin-top:20px;">
-                <p:commandButton value="Actualizar"
-                                 action="#{enviosBean.actualizarEnvio}"
-                                 styleClass="btn btn-success me-2 px-4"
-                                 ajax="false"/>
-                <p:button value="Volver"
-                          outcome="/envios/listarEnvios.xhtml"
-                          styleClass="btn btn-secondary me-2 px-4"/>
-            </div>
-        </h:form>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <div class="system-info">
-                <p>© 2025 Tienda Naturista - Sistema de Administración</p>
+            <div class="menu mt-4">
+                <h:link outcome="/admin.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-apps mr-2 lead"></i>Dashboard
+                </h:link>
+                <h:link outcome="/listarusuarios.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-contacts mr-2 lead"></i>Usuarios
+                </h:link>
+                <h:link outcome="/proveedor/index.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-cube mr-2 lead"></i>Proveedores
+                </h:link>
+                <h:link outcome="/ventas/listarVentas.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-cart mr-2 lead"></i>Ventas
+                </h:link>
+                <h:link outcome="/producto/index.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-folder mr-2 lead"></i>Productos
+                </h:link>
+                <h:link outcome="/mensajeria/listarMensajeria.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-paper-plane mr-2 lead"></i>Mensajería
+                </h:link>
+                <h:link outcome="/envios/listarEnvios.xhtml" styleClass="d-block text-light p-3 active">
+                    <i class="icon ion-md-send mr-2 lead"></i>Envíos
+                </h:link>
             </div>
         </div>
-    </footer>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="flex-grow-1">
+            <!-- NAVBAR -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+                <div class="container-fluid">
+                    <span class="navbar-brand font-weight-bold text-success">Panel de Administración</span>
+
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Administrador</a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <h:form>
+                                    <p:commandButton value="Cerrar Sesión"
+                                                     action="#{usuariosBean.cerrarSesion}"
+                                                     ajax="false"
+                                                     styleClass="dropdown-item text-danger"
+                                                     icon="pi pi-sign-out" />
+                                </h:form>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- FORMULARIO EDITAR ENVÍO -->
+            <div class="container my-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="icon ion-md-create mr-2"></i>Editar Envío</h5>
+                    </div>
+
+                    <div class="card-body">
+                        <h:form id="formEditarEnvio">
+
+                            <!-- ID oculto -->
+                            <h:inputHidden value="#{enviosBean.envio.idenvio}" />
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <h:outputLabel for="estado" value="Estado del Envío:" />
+                                    <p:selectOneMenu id="estado"
+                                                     value="#{enviosBean.envio.estado_envio}"
+                                                     required="true"
+                                                     styleClass="form-control">
+                                        <f:selectItem itemLabel="Seleccione un estado" itemValue="" noSelectionOption="true"/>
+                                        <f:selectItem itemLabel="Entregado" itemValue="Entregado"/>
+                                        <f:selectItem itemLabel="En reparto" itemValue="En reparto"/>
+                                        <f:selectItem itemLabel="Sin entregar" itemValue="Sin entregar"/>
+                                    </p:selectOneMenu>
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <h:outputLabel for="fechaEnvio" value="Fecha de Envío:" />
+                                    <p:calendar id="fechaEnvio"
+                                                value="#{enviosBean.envio.fecha_envio}"
+                                                pattern="yyyy-MM-dd"
+                                                required="true"
+                                                styleClass="form-control" />
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <h:outputLabel for="fechaEntrega" value="Fecha de Entrega:" />
+                                    <p:calendar id="fechaEntrega"
+                                                value="#{enviosBean.envio.fecha_entrega}"
+                                                pattern="yyyy-MM-dd"
+                                                styleClass="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <h:outputLabel for="dirSalida" value="Dirección de Salida:" />
+                                    <p:inputText id="dirSalida"
+                                                 value="#{enviosBean.envio.direccion_salida}"
+                                                 required="true"
+                                                 styleClass="form-control" />
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <h:outputLabel for="dirEntrega" value="Dirección de Entrega:" />
+                                    <p:inputText id="dirEntrega"
+                                                 value="#{enviosBean.envio.direccion_envio}"
+                                                 required="true"
+                                                 styleClass="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <h:outputLabel for="obs" value="Observaciones:" />
+                                    <p:inputTextarea id="obs"
+                                                     value="#{enviosBean.envio.observaciones}"
+                                                     rows="3"
+                                                     styleClass="form-control" />
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <h:outputLabel for="novedad" value="Novedades:" />
+                                    <p:inputTextarea id="novedad"
+                                                     value="#{enviosBean.envio.novedades}"
+                                                     rows="3"
+                                                     styleClass="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <h:outputLabel for="mensajeria" value="Mensajería:" />
+                                <p:selectOneMenu id="mensajeria"
+                                                 value="#{enviosBean.envio.fk_mensajeria}"
+                                                 required="true"
+                                                 styleClass="form-control">
+                                    <f:selectItem itemLabel="Seleccione una mensajería" itemValue="" noSelectionOption="true"/>
+                                    <f:selectItems value="#{enviosBean.listaMensajerias}"
+                                                   var="m"
+                                                   itemLabel="#{m.nombre_mensajeria}"
+                                                   itemValue="#{m.idmensajeria}" />
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <p:commandButton value="Actualizar"
+                                                 icon="pi pi-save"
+                                                 action="#{enviosBean.actualizarEnvio}"
+                                                 ajax="false"
+                                                 styleClass="btn btn-success px-5 mr-2" />
+                                <p:commandButton value="Volver"
+                                                 icon="pi pi-arrow-left"
+                                                 action="#{enviosBean.volverListado}"
+                                                 ajax="false"
+                                                 immediate="true"
+                                                 styleClass="btn btn-secondary px-5" />
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- fin contenido -->
+    </div> <!-- fin d-flex -->
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
 </h:body>
 </html>
