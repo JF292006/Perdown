@@ -58,7 +58,6 @@ public class MensajeriaBean implements Serializable {
     }
 
     public List<Mensajeria> getListaMensajeria() {
-        listarMensajeria();
         return listaMensajeria;
     }
 
