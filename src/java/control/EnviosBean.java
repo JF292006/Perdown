@@ -385,5 +385,13 @@ public class EnviosBean implements Serializable {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error listando envíos", e.getMessage()));
         }
     }
+    
+    public void volverListadooperario() {
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect("listarEnviosoperario.xhtml");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

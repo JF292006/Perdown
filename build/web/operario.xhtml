@@ -1,87 +1,210 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
-    <h:head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Panel de Operario - Tienda Naturista</title>
-    <h:outputStylesheet library="css" name="estilosadmin.css"/>
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      lang="es"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300;1,300&amp;display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
+
+    <title>Panel de Operario - Romar Natural</title>
 </h:head>
 
 <h:body>
-    <header>
-        <div class="logo-container">
-            <h:graphicImage library="images" name="logo.png" styleClass="logo"/>
-            <h1>Panel de Operario</h1>
+
+    <!-- Agregado 'style' para altura completa y 'text-light' para el sidebar -->
+    <div class="d-flex" style="min-height: 100vh;">
+        
+        <!-- SIDEBAR (Actualizado con estructura y clases del segundo archivo) -->
+        <div id="sidebar-container" class="bg-primary text-light">
+            <!-- Logo con padding y centrado -->
+            <div class="logo p-3">
+                <h4 class="text-light font-weight-bold text-center mb-0">Romar Natural</h4>
+            </div>
+            <!-- Menú con margen superior -->
+            <div class="menu mt-4">
+                <h:link outcome="/operario.xhtml" styleClass="d-block text-light p-3 active">
+                    <i class="icon ion-md-apps mr-2 lead"></i>Dashboard
+                </h:link>
+                
+                <h:link outcome="/proveedor/indexoperario.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-cube mr-2 lead"></i>Proveedores
+                </h:link>
+                
+                <h:link outcome="/ventas/listarVentas.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-cart mr-2 lead"></i>Ventas
+                </h:link>
+                
+                <h:link outcome="/producto/indexoperario.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-folder mr-2 lead"></i>Productos
+                </h:link>
+                
+                <h:link outcome="/mensajeria/listarMensajeriaoperario" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-paper-plane mr-2 lead"></i>Mensajería
+                </h:link>
+                
+                <h:link outcome="/envios/listarEnviosoperario" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-send mr-2 lead"></i>Envíos
+                </h:link>
+            </div>
         </div>
 
-        <div class="user-info">
-            <span class="admin-name">
-                Operario Activo: 
-                <h:outputText value="#{usuariosBean.usuarios.p_nombre}"/>
-            </span>
+        <!-- CONTENIDO PRINCIPAL -->
+        <!-- Cambiado 'w-100' por 'flex-grow-1' para que ocupe el espacio restante -->
+        <div class="flex-grow-1">
+            <!-- NAVBAR SUPERIOR (Sin cambios) -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+                    <div class="container-fluid">
+                        <form class="form-inline my-2 my-lg-0 ml-0 d-flex align-items-center">
+                            <input id="globalSearch"
+                                   class="form-control mr-2 search-input"
+                                   type="search"
+                                   placeholder="Buscar"
+                                   aria-label="Buscar"
+                                   onkeyup="filtrarUsuarios()" />
 
-            <h:form>
-                <p:commandButton value="Cerrar Sesión"
-                                 styleClass="logout-btn"
-                                 action="#{usuariosBean.cerrarSesion()}"
-                                 ajax="false"/>
-            </h:form>
-        </div>
-    </header>
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="filtrarUsuarios()">
+                                <i class="icon ion-md-search"></i>
+                            </button>
+                        </form>
 
-    <!-- DASHBOARD -->
-    <main class="admin-dashboard">
-        <div class="dashboard-grid">
-<div class="dashboard-module ventas">
-                <div class="module-icon">📊</div>
-                <h2>Gestionar Ventas</h2>
-                <p>Administra y visualiza tus ventas diarias, semanales y mensuales</p>
-                <h:link outcome="/ventas/listarVentas" value="Ir a Ventas" styleClass="module-link"/>
-            </div>
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Operario</a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <h:form>
+                                        <p:commandButton value="Cerrar Sesión"
+                                                         action="#{usuariosBean.cerrarSesion}"
+                                                         ajax="false"
+                                                         styleClass="dropdown-item text-danger"
+                                                         icon="pi pi-sign-out"/>
+                                        
+                                    </h:form>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
 
-            <div class="dashboard-module proveedores">
-                <div class="module-icon">🏢</div>
-                <h2>Gestionar Proveedores</h2>
-                <p>Administra perfiles de proveedores</p>
-                <h:button outcome="/proveedor/indexoperario" value="Ir a Proveedores" styleClass="module-link"/>
-            </div>
+            <!-- CONTENIDO PRINCIPAL (Sin cambios) -->
+            <div id="content">
+                <section class="py-3">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-9">
+                                <h1 class="font-weight-bold mb-0">
+                                    Bienvenido,
+                                    <h:outputText value="#{sessionScope.user}" />
+                                </h1>
+                                <p class="lead text-muted">Tu última información</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-            <div class="dashboard-module productos">
-                <div class="module-icon">📝</div>
-                <h2>Gestionar Productos</h2>
-                <p>Controla y gestiona tus productos</p>
-                <h:button outcome="/producto/indexoperario" value="Ir a Productos" styleClass="module-link"/>
-            </div>
-            
-            <div class="dashboard-module mensajeria">
-                <div class="module-icon">📫</div>
-                <h2>Gestionar Mensajeria</h2>
-                <p>Mantén un control preciso de tus productos y existencias</p>
-                 <h:button value="Ir a Mensajeria" outcome="/mensajeria/listarMensajeriaoperario" styleClass="module-link"/>
-            </div>
-            
-            <div class="dashboard-module envios">
-                <div class="module-icon">🚚</div>
-                <h2>Envios</h2>
-                <p>Administra los envios</p>
-                <h:button value="Ir a Envios" outcome="/envios/listarEnviosoperario" styleClass="module-link"/>
-            </div>
-        </div>
-    </main>
+                <!-- ESTADÍSTICAS (Sin cambios) -->
+                <section class="bg-mix">
+                    <div class="container">
+                        <div class="card rounded-0">
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-lg-3 d-flex stat my-3" repeat="4">
+                                        <div class="max-auto">
+                                            <h6 class="text-muted">Ingresos mensuales</h6>
+                                            <h3 class="font-weight-bold">$30.000</h3>
+                                            <h6 class="text-success">
+                                                <i class="icon ion-md-arrow-dropup-circle"></i>50.5%
+                                            </h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-content">
-            <div class="contact-info">
-                <h3>Panel Operario</h3>
-            </div>
-            <div class="system-info">
-                <p>© 2025 Tienda Naturista - Sistema de Administración</p>
-            </div>
-        </div>
-    </footer>
+                <!-- CHART + VENTAS RECIENTES (Sin cambios) -->
+                <section class="bg-grey">
+                    <div class="container">
+                        <div class="row">
+                            <!-- GRÁFICO -->
+                            <div class="col-lg-8 my-3">
+                                <div class="card rounded-0">
+                                    <div class="card-header">
+                                        <h6 class="font-weight-bold mb-0">Número de usuarios</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="myChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- VENTAS RECIENTES -->
+                            <div class="col-lg-4 my-3">
+                                <div class="card rounded-0">
+                                    <div class="card-header bg-light">
+                                        <h6 class="font-weight-bold mb-0">Ventas recientes</h6>
+                                    </div>
+                                    <div class="card-body pt-2">
+                                        <ui:repeat value="#{ventasBean.ultimasVentas}" var="venta">
+                                            <div class="d-flex border-bottom py-2">
+                                                <div class="d-flex mr-3">
+                                                    <h2 class="align-self-center mb-0"><i class="icon ion-md-pricetag"></i></h2>
+                                                </div>
+                                                <div class="align-self-center">
+                                                    <h6 class="d-inline-block mb-0">$#{venta.total}</h6>
+                                                    <span class="badge badge-success ml-2">#{venta.descuento}% desc</span>
+                                                    <small class="d-block text-muted">#{venta.producto}</small>
+                                                </div>
+                                            </div>
+                                        </ui:repeat>
+                                        <h:form>
+                                            <p:commandButton value="Ver todas"
+                                                             action="/ventas/listarVentas.xhtml?faces-redirect=true"
+                                                             styleClass="btn btn-success w-100" />
+                                        </h:form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div> <!-- fin content -->
+        </div> <!-- fin flex-grow-1 -->
+    </div> <!-- fin d-flex -->
+
+    <!-- SCRIPTS (Sin cambios) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data:{
+                labels: ['Enero', 'Febrero', 'Marzo', 'Abril'],
+                datasets: [{
+                    label: 'Usuarios nuevos',
+                    backgroundColor: ['#3d862e','#3d862e','#3d862e','#3d862e'],
+                    maxBarThickness: 30,
+                    data: [50, 100, 150, 200]
+                }]
+            },
+            options:{}
+        });
+    </script>
+
 </h:body>
 </html>
