@@ -1,83 +1,194 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      lang="es">
+
 <h:head>
-    <title>Detalle de Venta</title>
-    <h:outputStylesheet library="css" name="estilosadmin.css"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Detalle de Venta - Romar Natural</title>
+
+    <!-- Bootstrap, Iconos y Fuentes -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300;1,300&amp;display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow-y: auto;
+        }
+
+        /* Sidebar fijo */
+        #sidebar-container {
+            width: 288px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            background-color: #007bff;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        /* Contenedor principal ajustado */
+        .flex-grow-1 {
+            margin-left: 300px;
+            min-height: 100vh;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            padding-bottom: 3rem;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .card-body {
+            overflow-x: auto;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #555;
+        }
+    </style>
 </h:head>
+
 <h:body>
-<header>
-    <div class="logo-container">
-        <h:graphicImage library="images" name="logo.png" styleClass="logo"/>
-        <h1>Panel de Administración</h1>
+    <div class="d-flex">
+        <!-- SIDEBAR -->
+        <div id="sidebar-container" class="bg-primary text-light">
+            <div class="logo p-3">
+                <h4 class="text-light font-weight-bold text-center mb-0">Romar Natural</h4>
+            </div>
+            <div class="menu mt-4">
+                <h:link outcome="/admin.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-apps mr-2 lead"></i>Dashboard
+                </h:link>
+                <h:link outcome="/listarusuarios.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-contacts mr-2 lead"></i>Usuarios
+                </h:link>
+                <h:link outcome="/proveedor/index.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-cube mr-2 lead"></i>Proveedores
+                </h:link>
+                <h:link outcome="/ventas/listarVentas.xhtml" styleClass="d-block text-light p-3 active">
+                    <i class="icon ion-md-cart mr-2 lead"></i>Ventas
+                </h:link>
+                <h:link outcome="/producto/index.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-folder mr-2 lead"></i>Productos
+                </h:link>
+                <h:link outcome="/mensajeria/listarMensajeria.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-paper-plane mr-2 lead"></i>Mensajería
+                </h:link>
+                <h:link outcome="/envios/listarEnvios.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-send mr-2 lead"></i>Envíos
+                </h:link>
+            </div>
+        </div>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="flex-grow-1">
+            <!-- NAVBAR -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+                <div class="container-fluid">
+                    <span class="navbar-brand font-weight-bold text-success">Panel de Administración</span>
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Administrador</a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <h:form>
+                                    <p:commandButton value="Cerrar Sesión"
+                                                     action="#{usuariosBean.cerrarSesion}"
+                                                     ajax="false"
+                                                     styleClass="dropdown-item text-danger"
+                                                     icon="pi pi-sign-out" />
+                                </h:form>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- DETALLE DE VENTA -->
+            <div class="container my-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="icon ion-md-eye mr-2"></i>
+                            Detalle de Venta #<h:outputText value="#{ventaBean.ventaSeleccionada.idfactura}" />
+                        </h5>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- DATOS PRINCIPALES -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <p><span class="info-label">Usuario:</span> 
+                                    #{ventaBean.ventaSeleccionada.usuario.p_nombre} #{ventaBean.ventaSeleccionada.usuario.p_apellido}
+                                </p>
+                                <p><span class="info-label">Fecha:</span> 
+                                    <h:outputText value="#{ventaBean.ventaSeleccionada.fecha_factura}">
+                                        <f:convertDateTime pattern="yyyy-MM-dd" />
+                                    </h:outputText>
+                                </p>
+                                <p><span class="info-label">Observaciones:</span> 
+                                    #{ventaBean.ventaSeleccionada.observaciones}
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><span class="info-label">Subtotal:</span> $#{ventaBean.ventaSeleccionada.subtotal}</p>
+                                <p><span class="info-label">Descuento:</span> #{ventaBean.ventaSeleccionada.descuento}%</p>
+                                <p><span class="info-label">Abono:</span> $#{ventaBean.ventaSeleccionada.abono}</p>
+                                <p><span class="info-label">Total:</span> $#{ventaBean.ventaSeleccionada.valor_total}</p>
+                            </div>
+                        </div>
+
+                        <!-- TABLA DE PRODUCTOS -->
+                        <h5 class="mb-3"><i class="icon ion-md-cube mr-2"></i>Productos de la Venta</h5>
+                        <h:form>
+                            <p:dataTable value="#{ventaBean.detallesVenta}" var="d" paginator="true" rows="5"
+                                         emptyMessage="No hay productos para esta venta."
+                                         styleClass="table table-bordered table-striped w-100">
+                                <p:column headerText="Producto">
+                                    <h:outputText value="#{d.producto.nombre_producto}" />
+                                </p:column>
+                                <p:column headerText="Cantidad">
+                                    <h:outputText value="#{d.cantidad}" />
+                                </p:column>
+                                <p:column headerText="Valor Unitario">
+                                    <h:outputText value="#{d.valor_unitario}">
+                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Subtotal">
+                                    <h:outputText value="#{d.cantidad * d.valor_unitario}">
+                                        <f:convertNumber type="currency" currencySymbol="$" />
+                                    </h:outputText>
+                                </p:column>
+                            </p:dataTable>
+
+                            <!-- BOTÓN VOLVER -->
+                            <div class="text-right mt-4">
+                                <h:link outcome="/ventas/listarVentas.xhtml" styleClass="btn btn-secondary px-4">
+                                    <i class="pi pi-arrow-left mr-2"></i>Volver a Ventas
+                                </h:link>
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="user-info">
-        <h:form>
-            <p:commandButton value="Volver a Ventas"
-                             action="/ventas/listarVentas.xhtml?faces-redirect=true"
-                             ajax="false"/>
-        </h:form>
-    </div>
-</header>
 
-<main class="admin-dashboard">
-    <h2 style="text-align:center;">Detalle de Venta</h2>
-
-    <h:panelGrid columns="2" style="margin:20px auto;">
-        <h:outputText value="ID Factura:"/>
-        <h:outputText value="#{ventaBean.ventaSeleccionada.idfactura}"/>
-
-        <h:outputText value="Usuario"/>
-        <h:outputText value="#{ventaBean.ventaSeleccionada.usuario.p_nombre} #{ventaBean.ventaSeleccionada.usuario.p_apellido}"/>
-
-        <h:outputText value="Fecha:"/>
-        <h:outputText value="#{ventaBean.ventaSeleccionada.fecha_factura}">
-            <f:convertDateTime pattern="yyyy-MM-dd"/>
-        </h:outputText>
-
-        <h:outputText value="Subtotal:"/>
-        <h:outputText value="#{ventaBean.ventaSeleccionada.subtotal}"/>
-
-        <h:outputText value="Descuento:"/>
-        <h:outputText value="#{ventaBean.ventaSeleccionada.descuento}"/>
-
-        <h:outputText value="Abono:"/>
-        <h:outputText value="#{ventaBean.ventaSeleccionada.abono}"/>
-
-        <h:outputText value="Valor Total:"/>
-        <h:outputText value="#{ventaBean.ventaSeleccionada.valor_total}"/>
-
-        <h:outputText value="Observaciones:"/>
-        <h:outputText value="#{ventaBean.ventaSeleccionada.observaciones}"/>
-    </h:panelGrid>
-
-    <h3 style="text-align:center;">Productos de la Venta</h3>
-    <h:form>
-        <p:dataTable value="#{ventaBean.detallesVenta}" var="d" paginator="true" rows="5"
-                     emptyMessage="No hay productos para esta venta.">
-            <p:column headerText="Producto">
-                <h:outputText value="#{d.producto.nombre_producto}"/>
-            </p:column>
-            <p:column headerText="Cantidad">
-                <h:outputText value="#{d.cantidad}"/>
-            </p:column>
-            <p:column headerText="Valor Unitario">
-                <h:outputText value="#{d.valor_unitario}"/>
-            </p:column>
-            <p:column headerText="Subtotal">
-                <h:outputText value="#{d.cantidad * d.valor_unitario}">
-                    <f:convertNumber type="currency" currencySymbol="$"/>
-                </h:outputText>
-            </p:column>
-        </p:dataTable>
-    </h:form>
-</main>
-
-<footer>
-    <p>© 2025 Tienda Naturista</p>
-</footer>
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
 </h:body>
 </html>

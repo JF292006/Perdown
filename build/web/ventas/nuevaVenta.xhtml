@@ -1,162 +1,253 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      lang="es">
 
 <h:head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Nueva Venta</title>
-    <h:outputStylesheet library="css" name="estilosadmin.css"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Nueva Venta - Romar Natural</title>
+
+    <!-- Bootstrap, Iconos y Fuentes -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300;1,300&amp;display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow-y: auto;
+        }
+
+        #sidebar-container {
+            width: 288px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            background-color: #007bff;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .flex-grow-1 {
+            margin-left: 300px;
+            min-height: 100vh;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            padding-bottom: 3rem;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .card-body {
+            overflow-x: auto;
+        }
+    </style>
 </h:head>
 
 <h:body>
-    <!-- HEADER -->
-    <header>
-        <div class="logo-container">
-            <h:graphicImage library="images" name="logo.png" styleClass="logo"/>
-            <h1>Panel de Administración</h1>
-        </div>
-        <div class="user-info">
-            <h:form>
-                <p:commandButton value="Volver"
-                                 styleClass="logout-btn"
-                                 action="/ventas/listarVentas.xhtml?faces-redirect=true"
-                                 ajax="false"/>
-            </h:form>
-        </div>
-    </header>
-
-    <!-- MAIN -->
-    <main class="admin-dashboard">
-        <h2 style="text-align:center; margin-bottom:20px;">Registrar Nueva Venta</h2>
-
-        <h:form id="formNuevaVenta">
-            <p:messages id="messages" closable="true" showDetail="true" />
-
-            <!-- Cliente y Observaciones -->
-            <h:panelGrid columns="2" cellpadding="5" styleClass="form-grid">
-                
-                
-
-                <h:outputLabel for="obs" value="Observaciones:"/>
-                <p:inputTextarea id="obs" value="#{ventaBean.ventaActual.observaciones}" rows="3" cols="40"/>
-            </h:panelGrid>
-
-            <!-- Productos Disponibles -->
-            <h3>Productos Disponibles</h3>
-            <p:dataTable id="tablaProductos" value="#{productoBean.lstProds}" var="p"
-                         paginator="true" rows="5" styleClass="tabla-usuarios" style="width:90%;">
-                <p:column headerText="Nombre">
-                    <h:outputText value="#{p.nombre_producto}" />
-                </p:column>
-                <p:column headerText="Precio">
-                    <h:outputText value="#{p.precio_producto}">
-                        <f:convertNumber type="currency" currencySymbol="$" />
-                    </h:outputText>
-                </p:column>
-                <p:column headerText="Stock">
-                    <h:outputText value="#{p.stock}" />
-                </p:column>
-                <p:column headerText="Cantidad">
-                    <p:inputText value="#{ventaBean.cantidadesPorProducto[p.idproducto]}" size="3" maxlength="3">
-                        <f:convertNumber integerOnly="true"/>
-                    </p:inputText>
-                </p:column>
-                <p:column headerText="Acciones">
-                    <p:commandButton value="Agregar" icon="pi pi-cart-plus"
-                                     actionListener="#{ventaBean.agregarProducto(p)}"
-                                     update=":formNuevaVenta:carritoVentas :formNuevaVenta:totales :formNuevaVenta:messages"
-                                     styleClass="ui-button-success"/>
-                </p:column>
-            </p:dataTable>
-
-            <!-- Carrito -->
-            <h3>Carrito de Venta</h3>
-            <p:dataTable id="carritoVentas" value="#{ventaBean.carrito}" var="c"
-                         emptyMessage="No hay productos en el carrito" styleClass="tabla-usuarios" style="width:90%;">
-                <p:column headerText="Producto">
-                    <h:outputText value="#{c.producto.nombre_producto}" />
-                </p:column>
-                <p:column headerText="Cantidad">
-                    <h:outputText value="#{c.cantidad}" />
-                </p:column>
-                <p:column headerText="Subtotal">
-                    <h:outputText value="#{c.cantidad * c.valor_unitario}">
-                        <f:convertNumber type="currency" currencySymbol="$" />
-                    </h:outputText>
-                </p:column>
-                <p:column headerText="Eliminar">
-                    <p:commandButton value="Eliminar" icon="pi pi-trash"
-                                     actionListener="#{ventaBean.eliminarDelCarrito(c)}"
-                                     update=":formNuevaVenta:carritoVentas :formNuevaVenta:totales :formNuevaVenta:messages"
-                                     styleClass="ui-button-danger"/>
-                </p:column>
-            </p:dataTable>
-
-            <!-- Descuento y Abono -->
-            <h3>Descuento y Abono</h3>
-            <h:panelGrid columns="2" cellpadding="5" styleClass="form-grid">
-                <h:outputLabel for="descuento" value="Descuento (%):" />
-                <p:inputText id="descuento" value="#{ventaBean.ventaActual.descuento}" size="5">
-                    <f:convertNumber integerOnly="true"/>
-                    <p:ajax event="keyup" update="totales"/>
-                </p:inputText>
-
-                <h:outputLabel for="abono" value="Abono:" />
-                <p:inputText id="abono" value="#{ventaBean.ventaActual.abono}" size="5">
-                    <f:convertNumber maxFractionDigits="2"/>
-                    <p:ajax event="keyup" update="totales"/>
-                </p:inputText>
-            </h:panelGrid>
-
-            <!-- Totales -->
-            <p:panel id="totales" style="width:300px;margin-top:20px;">
-                <h:panelGrid columns="2" cellpadding="5">
-                    <h:outputLabel value="Subtotal:"/>
-                    <h:outputText value="#{ventaBean.subtotal}">
-                        <f:convertNumber type="currency" currencySymbol="$"/>
-                    </h:outputText>
-
-                    <h:outputLabel value="Descuento aplicado:"/>
-                    <h:outputText value="#{ventaBean.subtotal * (ventaBean.ventaActual.descuento / 100)}">
-                        <f:convertNumber type="currency" currencySymbol="$"/>
-                    </h:outputText>
-
-                    <h:outputLabel value="Total:"/>
-                    <h:outputText value="#{ventaBean.total}">
-                        <f:convertNumber type="currency" currencySymbol="$"/>
-                    </h:outputText>
-
-                    <h:outputLabel value="Abono:"/>
-                    <h:outputText value="#{ventaBean.ventaActual.abono}">
-                        <f:convertNumber type="currency" currencySymbol="$"/>
-                    </h:outputText>
-                </h:panelGrid>
-            </p:panel>
-
-            <!-- Botón Guardar -->
-            <div style="margin-top:20px; text-align:right;">
-                <p:commandButton value="Guardar Venta"
-                                 action="#{ventaBean.guardarVenta}"
-                                 update="messages carritoVentas totales tablaProductos"
-                                 styleClass="ui-button-success"/>
+    <div class="d-flex">
+        <!-- SIDEBAR -->
+        <div id="sidebar-container" class="bg-primary text-light">
+            <div class="logo p-3">
+                <h4 class="text-light font-weight-bold text-center mb-0">Romar Natural</h4>
             </div>
-        </h:form>
-    </main>
-
-    <!-- FOOTER -->
-    <footer>
-        <div class="footer-content">
-            <div class="contact-info">
-                <h3>Panel Administrativo</h3>
-            </div>
-            <div class="system-info">
-                <p>© 2025 Tienda Naturista - Sistema de Administración</p>
+            <div class="menu mt-4">
+                <h:link outcome="/admin.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-apps mr-2 lead"></i>Dashboard
+                </h:link>
+                <h:link outcome="/listarusuarios.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-contacts mr-2 lead"></i>Usuarios
+                </h:link>
+                <h:link outcome="/proveedor/index.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-cube mr-2 lead"></i>Proveedores
+                </h:link>
+                <h:link outcome="/ventas/listarVentas.xhtml" styleClass="d-block text-light p-3 active">
+                    <i class="icon ion-md-cart mr-2 lead"></i>Ventas
+                </h:link>
+                <h:link outcome="/producto/index.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-folder mr-2 lead"></i>Productos
+                </h:link>
+                <h:link outcome="/mensajeria/listarMensajeria.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-paper-plane mr-2 lead"></i>Mensajería
+                </h:link>
+                <h:link outcome="/envios/listarEnvios.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-send mr-2 lead"></i>Envíos
+                </h:link>
             </div>
         </div>
-    </footer>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <div class="flex-grow-1">
+            <!-- NAVBAR -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+                <div class="container-fluid">
+                    <span class="navbar-brand font-weight-bold text-success">Panel de Administración</span>
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Administrador</a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <h:form>
+                                    <p:commandButton value="Cerrar Sesión"
+                                                     action="#{usuariosBean.cerrarSesion}"
+                                                     ajax="false"
+                                                     styleClass="dropdown-item text-danger"
+                                                     icon="pi pi-sign-out" />
+                                </h:form>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- FORMULARIO NUEVA VENTA -->
+            <div class="container my-5">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="icon ion-md-add mr-2"></i>
+                            Registrar Nueva Venta
+                        </h5>
+                    </div>
+
+                    <div class="card-body">
+                        <h:form id="formNuevaVenta">
+                            <p:messages id="messages" showDetail="true" />
+
+                            <!-- Observaciones -->
+                            <div class="form-group">
+                                <h:outputLabel for="obs" value="Observaciones:" />
+                                <p:inputTextarea id="obs" value="#{ventaBean.ventaActual.observaciones}" 
+                                                 rows="3" styleClass="form-control" />
+                            </div>
+
+                            <!-- Tabla Productos -->
+                            <div class="mt-4">
+                                <h5><i class="icon ion-md-cube mr-2"></i>Productos Disponibles</h5>
+                                <p:dataTable id="tablaProductos" value="#{productoBean.lstProds}" var="p"
+                                             paginator="true" rows="5"
+                                             styleClass="table table-bordered table-striped">
+                                    <p:column headerText="Nombre">
+                                        <h:outputText value="#{p.nombre_producto}" />
+                                    </p:column>
+                                    <p:column headerText="Precio">
+                                        <h:outputText value="#{p.precio_producto}">
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Stock">
+                                        <h:outputText value="#{p.stock}" />
+                                    </p:column>
+                                    <p:column headerText="Cantidad">
+                                        <p:inputText value="#{ventaBean.cantidadesPorProducto[p.idproducto]}" 
+                                                     size="3" maxlength="3" styleClass="form-control text-center" />
+                                    </p:column>
+                                    <p:column headerText="Acciones">
+                                        <p:commandButton value="Agregar" icon="pi pi-cart-plus"
+                                                         actionListener="#{ventaBean.agregarProducto(p)}"
+                                                         update=":formNuevaVenta:carrito :formNuevaVenta:totales :formNuevaVenta:messages"
+                                                         styleClass="btn btn-success btn-sm" />
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+
+                            <!-- Carrito -->
+                            <div class="mt-5">
+                                <h5><i class="icon ion-md-cart mr-2"></i>Carrito de Venta</h5>
+                                <p:dataTable id="carrito" value="#{ventaBean.carrito}" var="c"
+                                             emptyMessage="No hay productos en el carrito"
+                                             styleClass="table table-bordered table-hover w-100">
+                                    <p:column headerText="Producto">
+                                        <h:outputText value="#{c.producto.nombre_producto}" />
+                                    </p:column>
+                                    <p:column headerText="Cantidad">
+                                        <h:outputText value="#{c.cantidad}" />
+                                    </p:column>
+                                    <p:column headerText="Subtotal">
+                                        <h:outputText value="#{c.cantidad * c.valor_unitario}">
+                                            <f:convertNumber type="currency" currencySymbol="$" />
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Eliminar">
+                                        <p:commandButton icon="pi pi-trash" value="Eliminar"
+                                                         actionListener="#{ventaBean.eliminarDelCarrito(c)}"
+                                                         update=":formNuevaVenta:carrito :formNuevaVenta:totales :formNuevaVenta:messages"
+                                                         styleClass="btn btn-danger btn-sm" />
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+
+                            <!-- Descuento y Abono -->
+                            <div class="form-row mt-4">
+                                <div class="form-group col-md-6">
+                                    <h:outputLabel value="Descuento (%):" />
+                                    <p:inputText id="descuento" value="#{ventaBean.ventaActual.descuento}" 
+                                                 styleClass="form-control">
+                                        <p:ajax event="keyup" update="totales" />
+                                    </p:inputText>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <h:outputLabel value="Abono:" />
+                                    <p:inputText id="abono" value="#{ventaBean.ventaActual.abono}" 
+                                                 styleClass="form-control">
+                                        <p:ajax event="keyup" update="totales" />
+                                    </p:inputText>
+                                </div>
+                            </div>
+
+                            <!-- Totales -->
+                            <p:panel id="totales" styleClass="card p-3 bg-light border mt-4">
+                                <h:panelGrid columns="2" columnClasses="col-md-6,col-md-6">
+                                    <h:outputLabel value="Subtotal:"/>
+                                    <h:outputText value="#{ventaBean.subtotal}">
+                                        <f:convertNumber type="currency" currencySymbol="$"/>
+                                    </h:outputText>
+
+                                    <h:outputLabel value="Descuento aplicado:"/>
+                                    <h:outputText value="#{ventaBean.subtotal * (ventaBean.ventaActual.descuento / 100)}">
+                                        <f:convertNumber type="currency" currencySymbol="$"/>
+                                    </h:outputText>
+
+                                    <h:outputLabel value="Total:"/>
+                                    <h:outputText value="#{ventaBean.total}">
+                                        <f:convertNumber type="currency" currencySymbol="$"/>
+                                    </h:outputText>
+
+                                    <h:outputLabel value="Abono:"/>
+                                    <h:outputText value="#{ventaBean.ventaActual.abono}">
+                                        <f:convertNumber type="currency" currencySymbol="$"/>
+                                    </h:outputText>
+                                </h:panelGrid>
+                            </p:panel>
+
+                            <!-- Botón Guardar -->
+                            <div class="text-right mt-4">
+                                <p:commandButton value="Guardar Venta"
+                                                 action="#{ventaBean.guardarVenta}"
+                                                 update="messages carrito totales tablaProductos"
+                                                 styleClass="btn btn-success px-4" />
+                                <h:link outcome="/ventas/listarVentas.xhtml" styleClass="btn btn-secondary px-4 ml-2">
+                                    <i class="pi pi-arrow-left mr-2"></i>Volver
+                                </h:link>
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
 </h:body>
 </html>

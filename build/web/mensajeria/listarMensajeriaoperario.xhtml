@@ -1,87 +1,203 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
-    <h:head>
-        <meta charset="UTF-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Listado de Mensajerías</title>
-        <h:outputStylesheet library="css" name="estilosadmin.css"/>
-    </h:head>
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      lang="es">
 
-    <h:body>
-        <header>
-            <div class="logo-container">
-                <h:graphicImage library="images" name="logo.png" styleClass="logo"/>
-                <h1>Panel de Administración</h1>
+<h:head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no"></meta>
+    <title>Gestión de Mensajerías - Romar Natural</title>
+
+    <!-- Bootstrap, iconos y fuentes -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" />
+    <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,300;1,300&amp;display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
+</h:head>
+
+<h:body>
+    <div class="d-flex" style="min-height: 100vh;">
+
+        <!-- Sidebar -->
+        <div id="sidebar-container" class="bg-primary text-light">
+            <!-- Logo con padding y centrado -->
+            <div class="logo p-3">
+                <h4 class="text-light font-weight-bold text-center mb-0">Romar Natural</h4>
             </div>
+            <!-- Menú con margen superior -->
+            <div class="menu mt-4">
+                <h:link outcome="/operario.xhtml" styleClass="d-block text-light p-3 active">
+                    <i class="icon ion-md-apps mr-2 lead"></i>Dashboard
+                </h:link>
 
-            <div class="user-info">
-                <h:form>
-                    <p:button value="Volver" outcome="/operario" styleClass="logout-btn"/>
+                <h:link outcome="/proveedor/indexoperario.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-cube mr-2 lead"></i>Proveedores
+                </h:link>
+
+                <h:link outcome="/ventas/listarVentasoperario.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-cart mr-2 lead"></i>Ventas
+                </h:link>
+
+                <h:link outcome="/producto/indexoperario.xhtml" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-folder mr-2 lead"></i>Productos
+                </h:link>
+
+                <h:link outcome="/mensajeria/listarMensajeriaoperario" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-paper-plane mr-2 lead"></i>Mensajería
+                </h:link>
+
+                <h:link outcome="/envios/listarEnviosoperario" styleClass="d-block text-light p-3">
+                    <i class="icon ion-md-send mr-2 lead"></i>Envíos
+                </h:link>
+            </div>
+        </div>
+
+        <!-- Contenido principal -->
+        <div class="flex-grow-1 bg-light">
+            
+            <!-- Navbar superior -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+                <div class="container-fluid">
+                    <form class="form-inline my-2 my-lg-0 ml-0 d-flex align-items-center">
+                        <input id="globalSearch"
+                               class="form-control mr-2 search-input"
+                               type="search"
+                               placeholder="Buscar mensajería"
+                               aria-label="Buscar"
+                               onkeyup="filtrarMensajeria()" />
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="filtrarMensajeria()">
+                            <i class="icon ion-md-search"></i>
+                        </button>
+                    </form>
+
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Operario</a>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <h:form>
+                                    <p:commandButton value="Cerrar Sesión"
+                                                     action="#{usuariosBean.cerrarSesion}"
+                                                     ajax="false"
+                                                     styleClass="dropdown-item text-danger"
+                                                     icon="pi pi-sign-out"/>
+                                </h:form>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Contenido principal -->
+            <div id="content" class="p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="font-weight-bold text-success m-0">Gestión de Mensajerías</h2>
+
+                    <div class="d-flex">
+                        <h:form>
+                            <p:commandButton value="Agregar Mensajería"
+                                             icon="pi pi-plus"
+                                             styleClass="pf-btn-primary mr-2"
+                                             action="#{mensajeriaBean.irAgregarMensajeriaoperario()}"
+                                             ajax="false" />
+
+                            <p:commandButton value="Reporte PDF"
+                                             icon="pi pi-file-pdf"
+                                             styleClass="pf-btn-secondary"
+                                             ajax="false"
+                                             actionListener="#{mensajeriaBean.exportarPDF()}" />
+                        </h:form>
+                    </div>
+                </div>
+
+                <!-- Tabla de mensajerías -->
+                <h:form enctype="multipart/form-data">
+                    <div class="mb-3 d-flex justify-content-between">
+                        <p:fileUpload 
+                            listener="#{mensajeriaBean.cargaMasivaDebug}" 
+                            mode="advanced" 
+                            auto="true" 
+                            allowTypes="/(\.|\/)(xls)$/"
+                            label="Carga Masiva Excel (.xls)"
+                            styleClass="pf-btn-upload" />
+                    </div>
+
+                    <p:dataTable id="mensajeriaTable"
+                                 value="#{mensajeriaBean.listaMensajeria}"
+                                 var="m"
+                                 paginator="true"
+                                 rows="5"
+                                 widgetVar="mensajeriaTableWV"
+                                 emptyMessage="No hay registros de mensajería"
+                                 style="width:100%;"
+                                 styleClass="tabla-usuarios table-custom ui-responsive"
+                                 paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}  {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,20">
+
+                        <f:facet name="header">
+                            <div class="d-flex align-items-center justify-content-between w-100">
+                                <div><strong>Lista de Mensajerías</strong></div>
+                                <div class="small text-muted">
+                                    Total: <span id="totalMensajeria">#{mensajeriaBean.listaMensajeria != null ? mensajeriaBean.listaMensajeria.size() : 0}</span>
+                                </div>
+                            </div>
+                        </f:facet>
+
+                        <p:column headerText="ID" style="width:6em">
+                            <h:outputText value="#{m.idmensajeria}" />
+                        </p:column>
+
+                        <p:column headerText="Nombre">
+                            <h:outputText value="#{m.nombre_mensajeria}" />
+                        </p:column>
+
+                        <p:column headerText="Teléfono">
+                            <h:outputText value="#{m.tel_mensajeria}" />
+                        </p:column>
+
+                        <p:column headerText="Dirección">
+                            <h:outputText value="#{m.direccion_mensajeria}" />
+                        </p:column>
+
+                        <p:column headerText="Cobertura">
+                            <h:outputText value="#{m.cobertura}" />
+                        </p:column>
+
+                        <p:column headerText="Acciones" style="width:12em; text-align:center;">
+                            <p:commandButton value="Editar"
+                                             icon="pi pi-pencil"
+                                             action="#{mensajeriaBean.editarMensajeriaoperario(m)}"
+                                             ajax="false"
+                                             styleClass="pf-btn-edit mr-2" />
+
+                            <p:commandButton value="Eliminar"
+                                             icon="pi pi-trash"
+                                             action="#{mensajeriaBean.eliminarMensajeria(m.idmensajeria)}"
+                                             ajax="false"
+                                             styleClass="pf-btn-delete"
+                                             onclick="return confirm('¿Seguro que deseas eliminar esta mensajería?');" />
+                        </p:column>
+                    </p:dataTable>
                 </h:form>
             </div>
-        </header>
+        </div>
+    </div>
 
-        <main class="admin-dashboard">
-            <h2 style="text-align:center; margin-bottom:20px;">Gestión de Mensajerías</h2>
+    <!-- Script de búsqueda global -->
+    <h:outputScript target="body">
+        function filtrarMensajeria() {
+            var q = document.getElementById('globalSearch').value.toLowerCase();
+            var rows = document.querySelectorAll('.tabla-usuarios table tbody tr');
+            rows.forEach(r => {
+                r.style.display = r.innerText.toLowerCase().includes(q) ? '' : 'none';
+            });
+        }
+    </h:outputScript>
 
-            <h:form>
-                <div style="margin-bottom:15px; text-align:right;">
-                    <p:commandButton value="Agregar Mensajería"
-                                     styleClass="logout-btn"
-                                     action="#{mensajeriaBean.irAgregarMensajeriaoperario()}"
-                                     ajax="false"/>
-                </div>
-
-                <p:dataTable value="#{mensajeriaBean.listaMensajeria}" var="m"
-                             paginator="true" rows="5"
-                             
-                             styleClass="tabla-usuarios">
-
-                    <p:column headerText="ID">
-                        <h:outputText value="#{m.idmensajeria}"/>
-                    </p:column>
-                    <p:column headerText="Nombre">
-                        <h:outputText value="#{m.nombre_mensajeria}"/>
-                    </p:column>
-                    <p:column headerText="Teléfono">
-                        <h:outputText value="#{m.tel_mensajeria}"/>
-                    </p:column>
-                    <p:column headerText="Dirección">
-                        <h:outputText value="#{m.direccion_mensajeria}"/>
-                    </p:column>
-                    <p:column headerText="Cobertura">
-                        <h:outputText value="#{m.cobertura}"/>
-                    </p:column>
-
-                    <p:column headerText="Acciones">
-                        <p:commandButton value="Editar"
-                                         action="#{mensajeriaBean.editarMensajeriaoperario(m)}"
-                                         ajax="false"
-                                         styleClass="btn-accion"/>
-
-                        <p:commandButton value="Eliminar"
-                                         action="#{mensajeriaBean.eliminarMensajeriaoperario(m.idmensajeria)}"
-                                         ajax="false"
-                                         styleClass="btn-accion"
-                                         onclick="return confirm('¿Seguro que deseas eliminar esta mensajería?');"/>
-                    </p:column>
-                </p:dataTable>
-            </h:form>
-        </main>
-
-        <footer>
-            <div class="footer-content">
-                <div class="contact-info">
-                    <h3>Panel Administrativo</h3>
-                </div>
-                <div class="system-info">
-                    <p>© 2025 Tienda Naturista - Sistema de Administración</p>
-                </div>
-            </div>
-        </footer>
-    </h:body>
+    <!-- Scripts Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+</h:body>
 </html>

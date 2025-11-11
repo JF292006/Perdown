@@ -410,4 +410,23 @@ public class VentaBean implements Serializable {
     public void setDetallesVenta(List<Venta_has_producto> detallesVenta) {
         this.detallesVenta = detallesVenta;
     }
+    
+    public String irEditarVentaoperario(Venta v) {
+        try {
+            // cargar la venta completa (si tu DAO tiene un obtenerPorId sería ideal; aquí usamos la instancia)
+            this.ventaActual = v;
+            // cargar detalles en carrito (usamos listarDetalle existente)
+            this.carrito = ventaDAO.listarDetalle(v.getIdfactura()); // lista de Venta_has_producto
+            // poblar el mapa de cantidades para la UI
+            cantidadesPorProducto = new HashMap<>();
+            for (Venta_has_producto vh : carrito) {
+                cantidadesPorProducto.put(vh.getProducto().getIdproducto(), vh.getCantidad());
+            }
+            return "/ventas/editarVentaoperario.xhtml?faces-redirect=true";
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error preparando edición: " + e.getMessage(), null));
+            return null;
+        }
+    }
 }

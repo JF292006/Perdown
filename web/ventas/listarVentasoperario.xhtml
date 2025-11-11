@@ -23,35 +23,33 @@
         
         <!-- SIDEBAR -->
         <div id="sidebar-container" class="bg-primary text-light">
+            <!-- Logo con padding y centrado -->
             <div class="logo p-3">
                 <h4 class="text-light font-weight-bold text-center mb-0">Romar Natural</h4>
             </div>
+            <!-- Menú con margen superior -->
             <div class="menu mt-4">
-                <h:link outcome="/admin.xhtml" styleClass="d-block text-light p-3">
+                <h:link outcome="/operario.xhtml" styleClass="d-block text-light p-3 active">
                     <i class="icon ion-md-apps mr-2 lead"></i>Dashboard
                 </h:link>
-
-                <h:link outcome="/listarusuarios.xhtml" styleClass="d-block text-light p-3">
-                    <i class="icon ion-md-contacts mr-2 lead"></i>Usuarios
-                </h:link>
-
-                <h:link outcome="/proveedor/index.xhtml" styleClass="d-block text-light p-3">
+                
+                <h:link outcome="/proveedor/indexoperario.xhtml" styleClass="d-block text-light p-3">
                     <i class="icon ion-md-cube mr-2 lead"></i>Proveedores
                 </h:link>
-
-                <h:link outcome="/ventas/listarVentas.xhtml" styleClass="d-block text-light p-3 active">
+                
+                <h:link outcome="/ventas/listarVentas.xhtml" styleClass="d-block text-light p-3">
                     <i class="icon ion-md-cart mr-2 lead"></i>Ventas
                 </h:link>
-
-                <h:link outcome="/producto/index.xhtml" styleClass="d-block text-light p-3">
+                
+                <h:link outcome="/producto/indexoperario.xhtml" styleClass="d-block text-light p-3">
                     <i class="icon ion-md-folder mr-2 lead"></i>Productos
                 </h:link>
-
-                <h:link outcome="/mensajeria/listarMensajeria.xhtml" styleClass="d-block text-light p-3">
+                
+                <h:link outcome="/mensajeria/listarMensajeriaoperario" styleClass="d-block text-light p-3">
                     <i class="icon ion-md-paper-plane mr-2 lead"></i>Mensajería
                 </h:link>
-
-                <h:link outcome="/envios/listarEnvios.xhtml" styleClass="d-block text-light p-3">
+                
+                <h:link outcome="/envios/listarEnviosoperario" styleClass="d-block text-light p-3">
                     <i class="icon ion-md-send mr-2 lead"></i>Envíos
                 </h:link>
             </div>
@@ -78,7 +76,7 @@
 
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Administrador</a>
+                            <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Operario</a>
                             <div class="dropdown-menu dropdown-menu-right">
                                 <h:form>
                                     <p:commandButton value="Cerrar Sesión"
@@ -160,10 +158,10 @@
 
                         <p:column headerText="Acciones" style="width:14em; text-align:center;">
                             <p:commandButton value="Detalle"
-                                             icon=""
+                                             icon="pi pi-eye"
                                              action="#{ventaBean.verDetalle(v)}"
                                              ajax="false"
-                                             styleClass="" />
+                                             styleClass="pf-btn-secondary mr-2" />
 
                             <p:commandButton value="Editar"
                                              icon="pi pi-pencil"
